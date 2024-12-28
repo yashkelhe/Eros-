@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+    // add the extension
+    previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+    // define the vector
+    extensions = [vector]
+}
+
+model User{
+    id String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    imageUrl String?
+    firstName String?
+    lastName String?
+
+    emailAddress String @unique
+
+    // how many files user can use to process
+    credits Int @default(150)
+    
+    // to know project
+    userToProjects UserToProject[] 
+}
+
+
+
+model Project{
+    id String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+    githubUrl String
+    
+    deletedAt DateTime? 
+
+    // to know user
+    userToProjects UserToProject[] 
+
+    // each project has list commits 
+    commits  Commit[]
+
+    // each file can have multiple docs/file 
+    sourceCodeEmbeddings SourceCodeEmbedding[]
+}
+
+// the relation ship between the user and project 
+// this many to many the project can have the multiple user and user can be part of the multiple projects
+model UserToProject{
+    id String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId String
+    projectId String
+
+    
+    user User @relation(fields: [userId],references: [id])
+    project Project  @relation(fields: [projectId],references: [id])
+
+    //  the userId and ProjectId should be different
+    @@unique([userId,projectId])
+}
+
+
+
+// represent the one docs 
+model SourceCodeEmbedding{
+    id String @id @default(cuid())
+
+    // its has 768 dimension, Why 768 
+    // because of the particular gemini model provide 
+    SummaryEmbedding Unsupported("vector(768)")?
+
+    sourceCode String
+    fileName String 
+    summary String 
+
+
+    projectId String
+    project Project @relation(fields: [projectId],  references: [id])
+}
+
+model Commit{
+    id String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    projectId String
+    project Project @relation(fields: [projectId], references: [id])   
+
+
+
+    commitMessage String
+    commitHash String
+    commitAuthorName String
+    commitAuthorAvatar String
+    commitDate DateTime
+
+    // ai summary
+    summary  String
+}
