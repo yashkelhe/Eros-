@@ -84,12 +84,12 @@ export const pollCommits = async (projectId: string) => {
     }
     return "";
   });
-  // console.log(summaries);
+  console.log("this is the summary  of all ", summaries);
 
   // and then store it in the database
   const commit = await db.commit.createMany({
     data: summaries.map((summary, index) => {
-      console.log(`processign commits : ${index}`);
+      // console.log(`processign commits : ${index}`);
       return {
         projectId: projectId,
         commitHash: unprocessedCommits[index]!.commitHash,
@@ -103,20 +103,29 @@ export const pollCommits = async (projectId: string) => {
     }),
   });
   // console.log(unprocessedCommits);
+  // console.log("data is stored in db");
+
+  console.log("Result of createMany:", commit);
   return commit;
 };
 
 // to summarise the commits
 async function summariseCommit(githubUrl: string, commitHash: string) {
   // get the diff, then pass to the ai
-  const { data } = await axios.get(`${githubUrl}/commit/${commitHash}.diff`, {
-    headers: {
-      // this is the github coustom formating
-      Accept: "application/vnd.github.v3.diff",
-    },
-  });
-  // pass the data to the ai
-  return aiSummeriseCommit(data) || "";
+  try {
+    const { data } = await axios.get(`${githubUrl}/commit/${commitHash}.diff`, {
+      headers: {
+        // this is the github coustom formating
+        Accept: "application/vnd.github.v3.diff",
+      },
+    });
+    // pass the data to the ai
+    // console.log("the data is passed to the Ai ");
+    return aiSummeriseCommit(data) || "";
+  } catch (error) {
+    console.error(`Error summarizing commit ${commitHash}:`, error);
+    return "";
+  }
 }
 
 // fetch the url  from the project id
