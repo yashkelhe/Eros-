@@ -30,6 +30,9 @@ model User{
     
     // to know project
     userToProjects UserToProject[] 
+
+    // to know the question
+    questionsAsked Question[]
 }
 
 
@@ -52,6 +55,10 @@ model Project{
 
     // each file can have multiple docs/file 
     sourceCodeEmbeddings SourceCodeEmbedding[]
+
+    // can have multiple questions
+    savedQuestions Question[]
+
 }
 
 // the relation ship between the user and project 
@@ -90,6 +97,25 @@ model SourceCodeEmbedding{
     projectId String
     project Project @relation(fields: [projectId],  references: [id])
 }
+
+
+model Question{
+    id String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    question String
+    answer String
+    fileReference Json?
+    projectId String 
+    project Project @relation(fields: [projectId], references: [id])
+
+
+    // user who asked the question
+    userId String
+    user User @relation(fields: [userId], references: [id])
+}
+
 
 model Commit{
     id String @id @default(cuid())
