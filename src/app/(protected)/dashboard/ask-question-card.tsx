@@ -10,14 +10,18 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { DialogHeader } from "@/components/ui/dialog";
 import Image from "next/image";
 import { askQuestion } from "./actions";
-import { set } from "date-fns";
+import { api } from "@/trpc/react";
 import CodeReferences from "./code-references";
+
+import { toast } from "sonner";
 
 const AskQuestionCard = () => {
   const { project } = useProject();
   const [question, setQuestion] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const saveAnswer = api.project.saveAnswer.useMutation();
+
   const [filesReferences, setFilesReferences] = useState<
     {
       fileName: string;
@@ -56,12 +60,44 @@ const AskQuestionCard = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[45vw] max-w-[70vw] overflow-auto">
           <DialogHeader>
-            <DialogTitle>
-              {question}
-              <Image src="/ffinal.png" alt="Eros" width={80} height={80} />
-            </DialogTitle>
-          </DialogHeader>
+            <div className="flex">
+              <DialogTitle>
+                {question}
+                <Image src="/ffinal.png" alt="Eros" width={80} height={80} />
+              </DialogTitle>
 
+              <Button
+                variant={"outline"}
+                disabled={saveAnswer.isPending}
+                onClick={() => {
+                  saveAnswer.mutate(
+                    {
+                      projectId: project!.id,
+                      question,
+                      answer,
+                      filesReferences,
+                    },
+                    {
+                      onSuccess: () => {
+                        toast.success("Answer Saved", {
+                          position: "top-right",
+                          style: { backgroundColor: "#4CAF50", color: "#fff" },
+                        });
+                      },
+                      onError: () => {
+                        toast.error("Failed to save answer", {
+                          position: "top-right",
+                          style: { backgroundColor: "#F44336", color: "#fff" },
+                        });
+                      },
+                    },
+                  );
+                }}
+              >
+                Save Answer
+              </Button>
+            </div>
+          </DialogHeader>
           <MDEditor.Markdown
             source={answer || ""}
             className="max-h-[50vh] max-w-[65vw] overflow-auto"
@@ -75,7 +111,10 @@ const AskQuestionCard = () => {
             onClick={() => {
               setOpen(false);
             }}
-          ></Button>
+          >
+            {" "}
+            close
+          </Button>
 
           {/* {filesReferences.length > 0 && (
             <>
