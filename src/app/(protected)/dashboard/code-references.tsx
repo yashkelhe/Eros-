@@ -18,10 +18,10 @@ const CodeReferences = ({ fileReferences }: Props) => {
     <div className="max-w-[65vw]">
       <Tabs value={tab} onValueChange={setTab}>
         <div className="overflow-y-autoscroll flex gap-2 overflow-x-auto rounded-md bg-gray-200 p-1">
-          {fileReferences.map((file) => (
+          {fileReferences.map((file, index) => (
             <button
               onClick={() => setTab(file.fileName)}
-              key={file.fileName}
+              key={index}
               className={cn(
                 "whitespace-nowrap rounded-md p-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted",
                 { "bg-primary text-primary-foreground": tab === file.fileName },
@@ -32,9 +32,9 @@ const CodeReferences = ({ fileReferences }: Props) => {
           ))}
         </div>
 
-        {fileReferences.map((file) => (
+        {fileReferences.map((file, index) => (
           <TabsContent
-            key={file.fileName}
+            key={index}
             value={file.fileName}
             className="max-h-[40vh] max-w-7xl overflow-scroll rounded-md"
           >
