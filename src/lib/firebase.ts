@@ -1,74 +1,44 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { createClient } from "@supabase/supabase-js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyD6pNcRRTnrrFBuul5WgfPhR6ZzgTtgaKk",
-  authDomain: "eros-git.firebaseapp.com",
-  projectId: "eros-git",
-  storageBucket: "eros-git.firebasestorage.app",
-  messagingSenderId: "61065552620",
-  appId: "1:61065552620:web:185f7b8a4b888024d3bbc9",
-  measurementId: "G-VF19YRQB4B",
-};
+const supabaseUrl = "https://ctvpuxhtzwnbkehyfiik.supabase.co"; // Replace with your Supabase project URL
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0dnB1eGh0enduYmtlaHlmaWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU4NDY3NTIsImV4cCI6MjA1MTQyMjc1Mn0.6SZCYkFJ5QMA6dBU_Y_hhdSjwe32U-SsU23QsE4FEkY"; // Replace with your Supabase anon key
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-export const storage = getStorage(app);
-
-// setProgress this will indiate the how much percent of the file have been uploaded
 export async function uploadFile(
   file: File,
   setProgress: (progress: number) => void,
 ) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
-      // Create a storage reference from our storage service and pass the file name
-      const storageRef = ref(storage, file.name);
-      const uploadedTask = uploadBytesResumable(storageRef, file);
+      const filePath = `${Date.now()}-${file.name}`; // Unique file path
 
-      uploadedTask.on(
-        "state_changed",
-        (snapshot) => {
-          // this snapshot will give you the progress of the file upload
-          const progress =
-            Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      // Upload file to Supabase storage
+      const { data, error } = await supabase.storage
+        .from("Eros-audio") // Your bucket name
+        .upload(filePath, file);
 
-          //   updateProgress(progress); // this will update the progress
-          if (setProgress) setProgress(progress);
+      if (error) {
+        return reject(error.message);
+      }
 
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-          }
-        },
-        (error) => {
-          reject(error);
-        },
-        () => {
-          // getDownloadURL will give you the download URL of the file after upload is finished
-          getDownloadURL(uploadedTask.snapshot.ref).then((downloadURL) => {
-            resolve(downloadURL);
-          });
-        },
-      );
+      if (error) {
+        return reject(`Upload failed: ${error}`);
+      }
+      // Get the public URL of the uploaded file
+      let { data: urlData } = await supabase.storage
+        .from("Eros-audio")
+        .getPublicUrl(filePath);
+
+      console.log("the URL is here", urlData.publicUrl);
+
+      if (!urlData || !urlData.publicUrl) {
+        return reject("Failed to get public URL");
+      }
+
+      // alert(`file upload success ${urlData.publicUrl}`);
+      resolve(urlData.publicUrl);
     } catch (error) {
-      console.error(error);
       reject(error);
     }
   });

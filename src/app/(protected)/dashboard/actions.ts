@@ -9,7 +9,7 @@ import { generateText } from "ai";
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API,
 });
-console.log("Available methods:", Object.keys(google));
+// console.log("Available methods:", Object.keys(google));
 
 export async function askQuestion(question: string, projectId: string) {
   try {

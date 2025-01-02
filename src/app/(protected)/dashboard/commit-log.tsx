@@ -1,5 +1,6 @@
 "use client ";
 
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import React from "react";
 import useProject from "@/hooks/use-project";
 import { api } from "@/trpc/react";

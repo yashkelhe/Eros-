@@ -84,7 +84,7 @@ export const pollCommits = async (projectId: string) => {
     }
     return "";
   });
-  console.log("this is the summary  of all ", summaries);
+  // console.log("this is the summary  of all ", summaries);
 
   // and then store it in the database
   const commit = await db.commit.createMany({
@@ -105,7 +105,7 @@ export const pollCommits = async (projectId: string) => {
   // console.log(unprocessedCommits);
   // console.log("data is stored in db");
 
-  console.log("Result of createMany:", commit);
+  // console.log("Result of createMany:", commit);
   return commit;
 };
 
