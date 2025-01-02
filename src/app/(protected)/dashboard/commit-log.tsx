@@ -9,6 +9,7 @@ import { ExternalLink } from "lucide-react";
 const CommitLog = () => {
   const { projectId, project } = useProject();
   const { data: commits } = api.project.getCommits.useQuery({ projectId });
+  // console.error("projectId from the commit-log=> ", projectId, " =>here u go ");
   return (
     <>
       <ul className="space-y-6">

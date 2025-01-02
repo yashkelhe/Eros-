@@ -16,7 +16,6 @@ const DashboardPage = () => {
 
   return (
     <div>
-      {project?.id}
       <div className="flex flex-wrap items-center justify-between gap-y-4">
         {/* github link */}
         <div className="rounded-mg w-fit bg-primary px-4 py-3">
@@ -46,7 +45,7 @@ const DashboardPage = () => {
       {/* grid section   */}
       <div className="mt-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
-          <AskQuestionCard/> MeetingCard
+          <AskQuestionCard /> MeetingCard
         </div>
       </div>
 

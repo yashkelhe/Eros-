@@ -2,18 +2,21 @@ import { api } from "@/trpc/react";
 import { useLocalStorage } from "usehooks-ts";
 
 const useProject = () => {
-  const { data: projects } = api.project.getAllProjects.useQuery();
+  // Fetch projects for the user
+  const { data: projects } = api.project.getProjectsOfUser.useQuery();
 
-  //   it use to store the project id so once u refresh the project dont gone
+  // Local storage to persist the selected project ID
   const [projectId, setProjectId] = useLocalStorage("dionysus-projectId", "");
 
-  //   get the all the prjects
+  // Validate if the projectId from localStorage exists in the fetched projects
   const project = projects?.find((project) => project.id === projectId);
+
+  // Return all required data, including loading and error states
   return {
-    projects, //all the projects
-    project, // sopecific project
-    projectId, //project id of sepecific
-    setProjectId,
+    projects, // All the projects
+    project, // Specific project
+    projectId, // Selected project ID
+    setProjectId, // Function to set project ID
   };
 };
 

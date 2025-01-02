@@ -12,7 +12,7 @@ import Image from "next/image";
 import { askQuestion } from "./actions";
 import { api } from "@/trpc/react";
 import CodeReferences from "./code-references";
-
+import useRefetch from "@/hooks/use-refetch";
 import { toast } from "sonner";
 
 const AskQuestionCard = () => {
@@ -29,8 +29,8 @@ const AskQuestionCard = () => {
       summary: string;
     }[]
   >([]);
-  const [answer, setAnswer] = useState<string | null>("");
-
+  const [answer, setAnswer] = useState<string>("");
+  const refetch = useRefetch();
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setAnswer("");
     setFilesReferences([]);
@@ -75,7 +75,7 @@ const AskQuestionCard = () => {
                       projectId: project!.id,
                       question,
                       answer,
-                      filesReferences,
+                      fileReference: filesReferences,
                     },
                     {
                       onSuccess: () => {
@@ -83,6 +83,7 @@ const AskQuestionCard = () => {
                           position: "top-right",
                           style: { backgroundColor: "#4CAF50", color: "#fff" },
                         });
+                        refetch();
                       },
                       onError: () => {
                         toast.error("Failed to save answer", {

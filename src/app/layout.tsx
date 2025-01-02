@@ -9,7 +9,7 @@ import { Toaster } from "sonner";
 export const metadata: Metadata = {
   title: "Dionysus",
   description: "ai ",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/ffinal.png" }],
 };
 
 export default function RootLayout({

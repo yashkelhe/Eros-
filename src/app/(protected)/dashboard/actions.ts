@@ -78,6 +78,7 @@ export async function askQuestion(question: string, projectId: string) {
       AI assistant will not apologize for previous responses but instead will indicate when new information was gained.
       AI assistant will not invent anything that is not drawn directly from the context.
       Answer in markdown syntax, with code snippets if needed. Be as detailed as possible when answering, and make sure there is no ambiguity.
+    
       `,
     });
 

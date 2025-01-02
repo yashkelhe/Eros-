@@ -84,7 +84,7 @@ export const createTRPCRouter = t.router;
 const isAuthenticated = t.middleware(async ({ next, ctx }) => {
   // take the use from the clerk
   const user = await auth();
-
+  // console.log("Authenticated user:", user);
   if (!user) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
@@ -94,7 +94,7 @@ const isAuthenticated = t.middleware(async ({ next, ctx }) => {
 
   return next({
     ctx: {
-      ...ctx,
+      ...ctx, // all the context
       user, // once u logged u can use it and this object which will pass to the backend
     },
   });

@@ -12,7 +12,7 @@ export const projectRouter = createTRPCRouter({
         githubToken: z.string().optional(),
       }),
     )
-    // in ctx u will get the database and the input in the input
+    // in ctx u will put the database and the input in the input
     .mutation(async ({ ctx, input }) => {
       const project = await ctx.db.project.create({
         data: {
@@ -32,21 +32,6 @@ export const projectRouter = createTRPCRouter({
       await pollCommits(project.id);
       return project;
     }),
-  getAllProjects: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db.project.findMany({
-      where: {
-        // get the all the projects that a user  have based on the userId
-        userToProjects: {
-          some: {
-            userId: ctx.user.userId!,
-          },
-        },
-
-        // if its deleted then dont show
-        deletedAt: null,
-      },
-    });
-  }),
 
   getCommits: protectedProcedure
     .input(
@@ -72,6 +57,7 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      console.error("the input is : - ", input.fileReference);
       return await ctx.db.question.create({
         data: {
           answer: input.answer,
@@ -82,4 +68,59 @@ export const projectRouter = createTRPCRouter({
         },
       });
     }),
+
+  getQuestions: protectedProcedure
+    .input(z.object({ projectId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.question.findMany({
+        where: {
+          projectId: input.projectId,
+        },
+        include: {
+          user: true,
+        },
+        // like most recent question first so we use desc
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }),
+
+  getProjectsOfUser: protectedProcedure.query(async ({ ctx }) => {
+    // console.log("[Backend] projectRouter call");
+    // Ensure the userId is defined in the context
+    if (!ctx.user?.userId) {
+      throw new Error("User ID is not defined");
+    }
+    // console.log("User ID in context:", ctx.user?.userId);
+
+    try {
+      // Fetch all projects associated with the user
+      const projects = await ctx.db.project.findMany({
+        where: {
+          userToProjects: {
+            some: {
+              userId: ctx.user.userId,
+            },
+          },
+          deletedAt: null, // Exclude deleted projects
+        },
+        include: {
+          userToProjects: {
+            include: {
+              user: true, // Include user information if needed
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc", // Sort by most recent projects first
+        },
+      });
+      // console.log("the result is : - ", projects);
+      return projects;
+    } catch (error) {
+      console.error("Error fetching projects for user:", error);
+      throw new Error("Failed to fetch projects for the user");
+    }
+  }),
 });
