@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import useProject from "@/hooks/use-project";
 import { solarizedDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { Button } from "@/components/ui/button";
 
 const Page = () => {
   const { projectId } = useProject();
@@ -23,7 +24,6 @@ const Page = () => {
       <h1 className="text-2x1 font-semibold">Meetings</h1>
       {meetings && meetings.length === 0 && <div>No Meetings found</div>}
       {isLoading && <div>Loading meetings...</div>}
-      {projectId}
       {
         <ul className="divide-y divide-gray-200">
           {meetings?.map((meeting, index) => (
@@ -47,6 +47,20 @@ const Page = () => {
                     )}
                   </div>
                 </div>
+                <div className="flex items-center gap-x-2 text-sm text-gray-500">
+                  <p className="whitespace-nowrap">
+                    {meeting.createdAt.toLocaleDateString()}
+                  </p>
+                  <p className="truncate"> {meeting.issues.length} issues</p>
+                </div>
+              </div>
+              <div className="flex flex-none items-center gap-x-4">
+                <Link
+                  href={`/meetings/${meeting.id}`}
+                  className="text-sm font-semibold"
+                >
+                  <Button variant={"outline"}>View Meeting</Button>
+                </Link>
               </div>
             </li>
           ))}
