@@ -93,7 +93,7 @@ export const projectRouter = createTRPCRouter({
     if (!ctx.user?.userId) {
       throw new Error("User ID is not defined");
     }
-    // console.log("User ID in context:", ctx.user?.userId);
+    // console.log(":", ctx.user?.userId);
 
     try {
       // Fetch all projects associated with the user
@@ -117,7 +117,7 @@ export const projectRouter = createTRPCRouter({
           createdAt: "desc", // Sort by most recent projects first
         },
       });
-      // console.log("the result is : - ", projects);
+      // console.log("the result is here: - ", projects);
       return projects;
     } catch (error) {
       console.error("Error fetching projects for user:", error);

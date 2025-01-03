@@ -38,8 +38,8 @@ const QApage = () => {
     p.userToProjects.map((utp) => utp.user.id),
   );
 
-  console.log("Project of the specific user", project);
-  console.log("Project IDs of the specific user", projectIds);
+  // console.log("Project of the specific user", project);
+  // console.log("Project IDs of the specific user", projectIds);
 
   const [questionIndex, setQuestionIndex] = React.useState(0);
 
