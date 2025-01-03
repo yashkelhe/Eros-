@@ -59,6 +59,8 @@ model Project{
     // can have multiple questions
     savedQuestions Question[]
 
+    // project can have the multiple meetings 
+    meetings Meeting[]
 }
 
 // the relation ship between the user and project 
@@ -99,6 +101,51 @@ model SourceCodeEmbedding{
 }
 
 
+model Meeting {
+    id String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+
+
+    // file name of the meeting
+    name String
+    // supabase storage URl  
+    meetingUrl String
+
+
+    meetingTranscriptSummaryEmbedding Unsupported("vector(768)")?
+
+    projectId String
+    project Project @relation(fields: [projectId], references: [id])
+
+    status MeetingStatus@default(PROCESSING)
+    // multiple issue can be there in single meeting
+    issues  Issue[]
+}
+
+// enum is use for to create the fix set of valuess
+enum MeetingStatus {
+      PROCESSING
+      COMPLETED
+}
+
+
+model Issue{
+    id String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    start String 
+    end String
+    gist String
+    headline  String 
+    summary String 
+    
+
+    meetingId String
+    meeting Meeting @relation(fields: [meetingId], references: [id])
+}
 model Question{
     id String @id @default(cuid())
     createdAt DateTime @default(now())

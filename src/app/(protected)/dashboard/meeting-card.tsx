@@ -6,14 +6,21 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useDropzone } from "react-dropzone";
 import { CircularProgressbar } from "react-circular-progressbar";
+import useProject from "@/hooks/use-project";
+import { toast } from "sonner";
+
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 
 const MeetingCard = () => {
   const [isUploading, setIsUploading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
-  const [download, setDownloadURL] =
-    React.useState<React.SetStateAction<string | null>>("");
-
+  const { project } = useProject();
+  const router = useRouter();
+  console.log("project Id is : - ", project?.id);
   //   we can even customize the dropzone to accept only audio files
+
+  const uploadMeeting = api.project.uploadMeeting.useMutation();
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "audio/*": [".mp3", ".wav", ".flac"],
@@ -25,18 +32,37 @@ const MeetingCard = () => {
       // console.error("Accepted files: -", acceptedFiles);
       const file = acceptedFiles[0]; // single file
 
-      if (acceptedFiles.length === 0) {
+      if (!file) return;
+      if (!acceptedFiles || acceptedFiles.length === 0) {
         console.error("No files were dropped.");
-        return;
-      }
-      // Single file as you're limiting to one fil
-      if (!acceptedFiles.length) {
-        console.error("No file selected.");
         return;
       }
       try {
         //   store the file in FB and  then take URL from FB
-        const downloadURL = await uploadFile(file as File, setProgress);
+        const downloadURL = (await uploadFile(
+          file as File,
+          setProgress,
+        )) as string;
+
+        if (!downloadURL) throw new Error("Failed to retrieve download URL.");
+        uploadMeeting.mutate(
+          {
+            projectId: project?.id ?? "",
+            meetingUrl: downloadURL,
+            name: file.name,
+          },
+          {
+            onSuccess: () => {
+              toast.success("Meeting uploaded successfully");
+              router.push("/meetings");
+            },
+            onError: (error) => {
+              toast.error("Failed to Upload the File ");
+            },
+          },
+        );
+        // window.alert(`the Linke is here ${downloadURL}`);
+        // console.log(`the Linke is here ${downloadURL}`);
 
         setIsUploading(false);
       } catch (error) {

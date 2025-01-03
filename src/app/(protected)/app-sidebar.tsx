@@ -72,9 +72,9 @@ export function AppSideBar() {
           <SidebarGroupLabel>applicaion</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => {
+              {items.map((item, index) => {
                 return (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem key={index}>
                     <SidebarMenuButton asChild>
                       <Link
                         href={item.url}
@@ -101,9 +101,9 @@ export function AppSideBar() {
           <SidebarGroupLabel> Your Projects</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {projects?.map((project) => {
+              {projects?.map((project, index) => {
                 return (
-                  <SidebarMenuItem key={project.name}>
+                  <SidebarMenuItem key={index}>
                     <SidebarMenuButton asChild>
                       <div onClick={() => setProjectId(project.id)}>
                         <div

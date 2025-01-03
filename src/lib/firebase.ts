@@ -30,14 +30,13 @@ export async function uploadFile(
         .from("Eros-audio")
         .getPublicUrl(filePath);
 
-      console.log("the URL is here", urlData.publicUrl);
+      // console.log("the URL is here", urlData.publicUrl);
 
       if (!urlData || !urlData.publicUrl) {
         return reject("Failed to get public URL");
       }
-
-      // alert(`file upload success ${urlData.publicUrl}`);
-      resolve(urlData.publicUrl);
+      // console.log("the URL is here hello ", urlData.publicUrl);
+      resolve(urlData.publicUrl as string);
     } catch (error) {
       reject(error);
     }
