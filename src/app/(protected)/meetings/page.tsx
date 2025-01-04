@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import useProject from "@/hooks/use-project";
 import { solarizedDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import useRefetch from "@/hooks/use-refetch";
 
 const Page = () => {
   const { projectId } = useProject();
@@ -16,6 +18,9 @@ const Page = () => {
     projectId: String(projectId),
   });
 
+  const refetch = useRefetch();
+
+  const deleteMeeting = api.project.deleteMeeting.useMutation();
   return (
     <>
       {/* {meetings?.map((meeting, index) => <div key={index}>{meeting.name}</div>)} */}
@@ -45,6 +50,11 @@ const Page = () => {
                         Processing...
                       </Badge>
                     )}
+                    {meeting.status === "COMPLETED" && (
+                      <Badge className="bg-blue-500 text-white">
+                        COMPLETED
+                      </Badge>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-x-2 text-sm text-gray-500">
@@ -59,8 +69,29 @@ const Page = () => {
                   href={`/meetings/${meeting.id}`}
                   className="text-sm font-semibold"
                 >
-                  <Button variant={"outline"}>View Meeting</Button>
+                  <Button size="sm" variant={"outline"}>
+                    View Meeting
+                  </Button>
                 </Link>
+
+                <Button
+                  variant={"destructive"}
+                  size="sm"
+                  disabled={deleteMeeting.isPending}
+                  onClick={() =>
+                    deleteMeeting.mutate(
+                      { meetingId: meeting.id },
+                      {
+                        onSuccess: () => {
+                          toast.success("Meeting deleted successfully", {});
+                          refetch();
+                        },
+                      },
+                    )
+                  }
+                >
+                  Delete
+                </Button>
               </div>
             </li>
           ))}
