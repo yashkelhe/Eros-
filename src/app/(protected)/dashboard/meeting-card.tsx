@@ -32,6 +32,7 @@ const MeetingCard = () => {
         projectId,
       });
 
+      console.log("the response", response);
       return response.data;
     },
   });

@@ -27,8 +27,10 @@ export async function POST(req: NextRequest) {
     const { meetingUrl, meetingId } = bodyParser.parse(body);
     // Do something with the body
 
+    console.log("Audio Url  : ", meetingUrl);
     const { summarizes } = await processMeeting(meetingUrl);
 
+    console.log("this are the summary : ", summarizes);
     await db.issue.createMany({
       data: summarizes.map((summary) => ({
         start: summary.start,
