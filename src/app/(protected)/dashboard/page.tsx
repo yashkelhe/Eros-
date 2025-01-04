@@ -8,6 +8,8 @@ import CommitLog from "./commit-log";
 import AskQuestionCard from "./ask-question-card";
 import MeetingCard from "./meeting-card";
 import ArchiveButton from "./archive-button";
+import InviteButton from "./invite-button";
+import TeamMembers from "./team-members";
 
 const DashboardPage = () => {
   // take the login user
@@ -40,7 +42,8 @@ const DashboardPage = () => {
 
         <div className="h-4"></div>
         <div className="flex items-center gap-4">
-          teamMembers InviteButton
+          <TeamMembers />
+          <InviteButton />
           <ArchiveButton />
         </div>
       </div>
