@@ -83,7 +83,19 @@ function IssueCard({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{issue.gist}</DialogTitle>
-            <DialogDescription>{issue.headline}</DialogDescription>
+            <DialogDescription>
+              {issue.createdAt.toLocaleDateString()}
+            </DialogDescription>
+            <p className="text-gray-600">{issue.headline}</p>
+            <blockquote className="mt-4 border-l-2 border-gray-300 bg-gray-50 p-4 pt-4">
+              <span className="text-sm text-gray-600">
+                {issue.start} - {issue.end}
+              </span>
+
+              <p className="font-medium italic leading-relaxed text-gray-900">
+                {issue.summary}
+              </p>
+            </blockquote>
           </DialogHeader>
         </DialogContent>
       </Dialog>
