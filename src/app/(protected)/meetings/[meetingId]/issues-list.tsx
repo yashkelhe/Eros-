@@ -1,7 +1,24 @@
 "use client";
-import { api } from "@/trpc/react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { RouterOutputs, api } from "@/trpc/react";
+
 import { VideoIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 type Props = {
   meetingId: string;
@@ -29,12 +46,60 @@ const IssuesList = ({ meetingId }: Props) => {
               <VideoIcon className="h-8 w-8" />
             </div>
 
-            <h1 className=""></h1>
+            <h1 className="">
+              <div className="text-sm leading-6 text-gray-600">
+                Meeting on {meeting.createdAt.toLocaleDateString()}
+              </div>
+              <div className="mt-1 text-base font-semibold leading-6 text-gray-900">
+                {meeting.name}
+              </div>
+            </h1>
           </div>
+        </div>
+
+        <div className="h-4"></div>
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          {meeting.issues.map((issue, index) => (
+            <IssueCard key={issue.id} issue={issue} />
+          ))}
         </div>
       </div>
     </>
   );
 };
 
+function IssueCard({
+  issue,
+}: {
+  issue: NonNullable<
+    RouterOutputs["project"]["getMeetingById"]
+  >["issues"][number];
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{issue.gist}</DialogTitle>
+            <DialogDescription>{issue.headline}</DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+      <Card className="relative">
+        <CardHeader>
+          <CardTitle className="text-xl">{issue.gist}</CardTitle>
+          <div className="border-b"></div>
+
+          <CardDescription>{issue.headline}</CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <Button onClick={() => setOpen(true)}>Details</Button>
+        </CardContent>
+      </Card>
+    </>
+  );
+}
 export default IssuesList;
