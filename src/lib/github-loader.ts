@@ -3,6 +3,71 @@ import { GithubRepoLoader } from "@langchain/community/document_loaders/web/gith
 import { Document } from "@langchain/core/documents";
 import { generateEmbedding, summariseCode } from "./gemini";
 import { db } from "@/server/db";
+import { Octokit } from "octokit";
+
+// this is the recursive function which counts the number of the files in the repo
+const getFileCount = async (
+  path: string,
+  octokit: Octokit,
+  githubOwner: string,
+  githubRepo: string,
+  acc: number = 0,
+) => {
+  const { data } = await octokit.rest.repos.getContent({
+    owner: githubOwner,
+    repo: githubRepo,
+    path,
+  });
+
+  // if there is not array means there is only one file
+  if (!Array.isArray(data) && data.type === "file") {
+    return acc + 1;
+  }
+
+  if (Array.isArray(data)) {
+    let fileCount = 0;
+    const directories: string[] = [];
+    for (const items of data) {
+      if (items.type === "dir") {
+        // to put in the array to get the dir file > recursive
+        directories.push(items.path);
+      } else {
+        fileCount++;
+      }
+    }
+
+    // if still there is another dir then
+    if (directories.length > 0) {
+      const directoryCount = await Promise.all(
+        directories.map((dirPath) =>
+          getFileCount(dirPath, octokit, githubOwner, githubRepo, 0),
+        ),
+      );
+
+      fileCount += directoryCount.reduce((acc, count) => acc + count, 0);
+    }
+
+    return acc + fileCount;
+  }
+
+  return acc;
+};
+export const checkCredits = async (githubUrl: string, githubToken?: string) => {
+  // find out how mmany files in the repo
+  const octokit = new Octokit({ auth: githubToken });
+
+  // of the Url 3 owner and 4 repo name
+  const githubOwner = githubUrl.split("/")[3];
+  const githubRepo = githubUrl.split("/")[4];
+
+  if (!githubOwner || !githubRepo) {
+    return 0;
+  }
+
+  const fileCount = await getFileCount("", octokit, githubOwner, githubRepo, 0);
+
+  return fileCount;
+};
 
 export const loadGithubRepo = async (
   githubUrl: string,

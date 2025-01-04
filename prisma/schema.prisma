@@ -26,13 +26,15 @@ model User{
     emailAddress String @unique
 
     // how many files user can use to process
-    credits Int @default(150)
+    credits Int @default(200)
     
     // to know project
     userToProjects UserToProject[] 
 
     // to know the question
     questionsAsked Question[]
+
+    stripeTransactions StripeTransaction[]
 }
 
 
@@ -145,6 +147,17 @@ model Issue{
 
     meetingId String
     meeting Meeting @relation(fields: [meetingId], references: [id])
+}
+
+
+model StripeTransaction {
+      id String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId String
+    user User  @relation(fields: [userId], references: [id])
+    credits Int
 }
 model Question{
     id String @id @default(cuid())

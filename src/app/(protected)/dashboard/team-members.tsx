@@ -5,7 +5,7 @@ import React from "react";
 const TeamMembers = () => {
   const { projectId } = useProject();
 
-  const { data: members, isLoading } = api.project.getTeamMembers.useQuery({
+  const { data: members } = api.project.getTeamMembers.useQuery({
     projectId: projectId!,
   });
   return (

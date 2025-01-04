@@ -23,7 +23,7 @@ const QApage = () => {
   // Fetch questions related to the current project
   const { data: questions, error: questionsError } =
     api.project.getQuestions.useQuery(
-      { projectId },
+      { projectId: String(projectId) },
       { enabled: !!projectId }, // Ensure the query only runs if projectId exists
     );
 
