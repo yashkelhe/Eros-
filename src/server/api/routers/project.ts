@@ -194,7 +194,25 @@ export const projectRouter = createTRPCRouter({
   deleteMeeting: protectedProcedure
     .input(z.object({ meetingId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.meeting.delete({ where: { id: input.meetingId } });
+      try {
+        console.log("this is the meetingId : ", input.meetingId);
+
+        // Delete associated issues first (if not using cascade)
+        await ctx.db.issue.deleteMany({
+          where: { meetingId: input.meetingId },
+        });
+
+        // Now delete the meeting
+        const response = await ctx.db.meeting.delete({
+          where: { id: input.meetingId },
+        });
+
+        console.log("this is the response", response);
+        return response;
+      } catch (error) {
+        console.error("Error deleting meeting:", error);
+        throw new Error("Failed to delete the meeting. Please try again.");
+      }
     }),
 
   getMeetingById: protectedProcedure
