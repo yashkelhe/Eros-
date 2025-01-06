@@ -1,9 +1,8 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 import { Document } from "@langchain/core/documents";
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API!);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-const prompt = "Explain how AI works";
 
 export const aiSummeriseCommit = async (diff: string) => {
   //https://github.com/owner/repo/commit/<CommitHash>.diff
