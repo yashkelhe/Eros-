@@ -14,7 +14,7 @@ const useProject = () => {
   }
   // console.log("from backend ", projects);
 
-  const [projectId, setProjectId] = useLocalStorage("dionysus-projectId", null);
+  const [projectId, setProjectId] = useLocalStorage("EROS-projectId", null);
   // console.log("from localStorage ", projectId);
 
   const project = projects?.find((project) => project.id === projectId);

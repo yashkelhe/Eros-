@@ -7,7 +7,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "Dionysus",
+  title: "EROS",
   description: "ai ",
   icons: [{ rel: "icon", url: "/ffinal.png" }],
 };

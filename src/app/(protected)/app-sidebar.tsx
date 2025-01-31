@@ -64,7 +64,7 @@ export function AppSideBar() {
             height={10}
             className="scale-125"
           />
-          {/* <h1 className="text-xl font-bold text-primary/80">Dionysus</h1> */}
+          {/* <h1 className="text-xl font-bold text-primary/80">EROS</h1> */}
         </div>
       </SidebarHeader>
       <SidebarContent>

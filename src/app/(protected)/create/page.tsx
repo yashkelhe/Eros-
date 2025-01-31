@@ -66,7 +66,7 @@ const CreatePage = () => {
             Link Your Github Repository
           </h1>
           <p className="text-sm text-muted-foreground">
-            Enter the URL of your Repository to link it to Dionysus
+            Enter the URL of your Repository to link it to EROS
           </p>
         </div>
         <div className="h-4"></div>
