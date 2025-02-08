@@ -1,6 +1,5 @@
 # AI-Powered Code Comprehension Platform
 
-![Project Banner](https://via.placeholder.com/1200x400?text=AI+Code+Analysis+Tool+Demo)  
 _Accelerating developer onboarding through intelligent codebase analysis_
 
 ## 🚀 Overview
@@ -17,7 +16,7 @@ A full-stack platform designed to help developers rapidly understand complex cod
 
 - **Real-Time Processing**
 
-  - Secure file handling with Firebase Storage
+  - Secure file handling with Supabase Storage
   - Audio transcription support via AssemblyAI
   - Progress tracking for AI analysis workflows
 
@@ -29,16 +28,13 @@ A full-stack platform designed to help developers rapidly understand complex cod
 
 ## 📦 Tech Stack
 
-**Core Framework**  
-[![T3 Stack](https://avatars.githubusercontent.com/u/85960715?s=48&v=4)](https://create.t3.gg/)  
+**Core Framework**
 Next.js | TypeScript | tRPC | Prisma | Tailwind CSS
 
 **AI/ML Ecosystem**  
-[![LangChain](https://avatars.githubusercontent.com/u/105877363?s=48&v=4)](https://www.langchain.com/)  
 LangChain | Gemini API | OpenAI | AssemblyAI
 
 **Services**  
-[![Clerk](https://clerk.com/favicon/favicon-32x32.png)](https://clerk.com/)  
 PostgreSQL | Firebase | Clerk | Stripe
 
 ## 🛠️ Getting Started
@@ -51,7 +47,7 @@ PostgreSQL | Firebase | Clerk | Stripe
 - API keys for:
   - Google Gemini
   - Clerk
-  - Firebase
+  - supabase
   - AssemblyAI
   - Stripe
 
@@ -59,9 +55,8 @@ PostgreSQL | Firebase | Clerk | Stripe
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/ai-code-analyzer.git
-cd ai-code-analyzer
-
+git clone https://github.com/yashkelhe/EROS-.git
+cd eros-
 # Install dependencies
 bun install
 
