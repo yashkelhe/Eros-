@@ -8,7 +8,7 @@ import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "EROS",
-  description: "ai ",
+  description: "ai",
   icons: [{ rel: "icon", url: "/ffinal.png" }],
 };
 
