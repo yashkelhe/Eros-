@@ -57,13 +57,13 @@ export function AppSideBar() {
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
         <div className="item-center flex h-20 gap-2">
-          <Image
-            src="/ffinal.png"
-            alt="logo"
-            width={150}
-            height={10}
-            className="scale-125"
-          />
+          //<Image
+           // src="/ffinal.png"
+           // alt="logo"
+           // width={150}
+          //  height={10}
+         // className="scale-125"
+         // />
           {/* <h1 className="text-xl font-bold text-primary/80">EROS</h1> */}
         </div>
       </SidebarHeader>
